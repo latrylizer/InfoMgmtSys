@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using InfoMgmtSys.Models.DataEntry.DataEntryReceivedFunctions;
-
+using InfoMgmtSys.Models.DataEntry.ApIncharge.DataEntryReceivedFunctions;
+using InfoMgmtSys.Models.DataEntry.Warehouseman;
 namespace InfoMgmtSys.Controllers
 {
     public class DataEntryIssuanceController : Controller
@@ -9,7 +9,7 @@ namespace InfoMgmtSys.Controllers
         {
             return View();
         }
-        [HttpPost("Add Data Entry Issuance")]
+        [HttpPost("AddDataEntryIssuance")]
         public IActionResult AddDataEntryIssuance([FromForm] Models.DataEntry.DataEntryIssuance dei)
         {
             using var db = new AppDB();
@@ -17,18 +17,25 @@ namespace InfoMgmtSys.Controllers
             if (isExecuted) Console.WriteLine("insert success");
             return isExecuted ? Ok() : BadRequest();
         }
-        [HttpGet("Get All Data Entry Issuance")]
+        [HttpGet("GetAllDataEntryIssuance")]
         public ActionResult<List<Models.DataEntry.DataEntryIssuance>> GetAllDataEntryIssuance()
         {
             using var db = new AppDB();
             var list = Models.DataEntry.DataEntryIssuance.GetAllDataEntryIssuance(db);
             return list;
         }
-        [HttpPut("UpdateDataEntryIssuance")]
+        [HttpPut("UpdateDataEntryIssuanceApIncharge")]
         public IActionResult UpdateDataEntryIssuance([FromForm]UpdateDataEntryIssuance updateDataEntryIssuance) 
         {
             using var db = new AppDB();
             bool isExecuted = updateDataEntryIssuance.ExeUpdateDataEntryIssuance(db, updateDataEntryIssuance);
+            return isExecuted? Ok(): BadRequest();
+        }
+        [HttpPost("AddDataEntryIssuanceWarehouseman")]
+        public IActionResult AddDataEntryIssuanceWarehouseman([FromForm]AddDataEntryIssuance adei)
+        {
+            using var db = new AppDB();
+            bool isExecuted = adei.AddDataEntryIssuanceWarehouseman(db, adei);
             return isExecuted? Ok(): BadRequest();
         }
     }

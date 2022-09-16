@@ -1,4 +1,4 @@
-﻿namespace InfoMgmtSys.Models.DataEntry.DataEntryReceivedFunctions
+﻿namespace InfoMgmtSys.Models.DataEntry.ApIncharge.DataEntryReceivedFunctions
 {
     public class UpdateDataEntryIssuance
     {

@@ -1,5 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Reflection;
+using InfoMgmtSys.Models.DataEntry;
+
 namespace InfoMgmtSys
 {
     public sealed class AppDB: IDisposable
@@ -62,11 +65,11 @@ namespace InfoMgmtSys
             query.CommandType = System.Data.CommandType.StoredProcedure;
             return query;
         }
-        public MySqlCommand Param(MySqlCommand query, string parameter, string value)
+        public void Param(MySqlCommand query, string parameter, string value)
         {
             query.Parameters.AddWithValue(parameter, value);
-            return query;
         }
+        
         public bool AddStoredProc(AppDB db, object obj, string storedProc)
         {
             using var query = db.StoredProc(storedProc);
@@ -80,6 +83,27 @@ namespace InfoMgmtSys
             var hasRows = query.ExecuteNonQuery();
             return hasRows == 1; ;
         }
+        public MySqlDataReader ExeDrStoredProc(AppDB db,object obj, string storedProc)
+        {
+            using var query = db.StoredProc(storedProc);
+            var count = obj.GetType().GetProperties().Length;
+            for (int num1 = 0; num1 < count; num1++)
+            {
+                string name = obj.GetType().GetProperties()[num1].Name;
+                string value = obj.GetType().GetProperties()[num1].GetValue(obj, null)?.ToString() ?? "";
+                db.Param(query, name, value);
+            }
+            return query.ExecuteReader();
+        }
+        public void Exeresult(bool result)
+        {
+            if (result)
+            {
+                Console.WriteLine("Insert Success");
+            }
+            else Console.WriteLine("Insert Failed");
+        }
+        
         public void Dispose() => conn.Dispose();
     }
 }

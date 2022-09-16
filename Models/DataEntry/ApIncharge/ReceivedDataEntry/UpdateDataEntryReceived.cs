@@ -1,6 +1,6 @@
-﻿namespace InfoMgmtSys.Models.DataEntry.DataEntryReceivedFunctions
+﻿namespace InfoMgmtSys.Models.DataEntry.ApIncharge.DataEntryReceivedFunctions
 {
-    public class UpdateDataEntryRecieved
+    public class UpdateDataEntryReceived
     {
        public int Id { get; set; }
         public int Charge_or_sales_invoice { get; set; }
@@ -12,7 +12,7 @@
         public double Total_amount_payable_to_trucker { get; set; }
         public int Status { get; set; } 
 
-        public bool ExeUpdateDataEntryRecieved (AppDB db, UpdateDataEntryRecieved uder)
+        public bool ExeUpdateDataEntryRecieved (AppDB db, UpdateDataEntryReceived uder)
         {
             return db.AddStoredProc(db, uder, "Update_data_entry_recieved");
         }
