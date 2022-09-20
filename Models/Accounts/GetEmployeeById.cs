@@ -14,7 +14,7 @@ namespace InfoMgmtSys.Models.Accounts
 
         public static List<GetEmployeeById> ExeGetEmployeeById(AppDB db, Object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "get_employee_by_id"));
+            return ToList(db.ExeDrStoredProc(db, obj, "Get_employee_by_id"));
         }
         public static List<GetEmployeeById> ToList(MySqlDataReader dr)
         {

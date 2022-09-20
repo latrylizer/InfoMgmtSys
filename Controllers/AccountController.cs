@@ -51,6 +51,20 @@ namespace InfoMgmtSys.Controllers
             bool isExecuted = updateAccountAccessByEmployeeId.ExeUpdateAccountAccessByEmployeeId(db, updateAccountAccessByEmployeeId);
             return ExeResult(isExecuted);
         }
+        [HttpPut("UpdateUsername")]
+        public IActionResult UpdateUsername([FromForm] UpdateUsername updateUsername)
+        {
+            using var db = new AppDB();
+            bool isExecuted = updateUsername.ExeUpdateUsername(db, updateUsername);
+            return ExeResult(isExecuted);
+        }
+        [HttpPut("UpdatePassword")]
+        public IActionResult UpdatePassword([FromForm] UpdatePassword updatePassword)
+        {
+            using var db = new AppDB();
+            bool isExecuted = updatePassword.ExeUpdatePassword(db, updatePassword);
+            return ExeResult(isExecuted);
+        }
         [HttpGet("GetPostion")]
         public ActionResult<List<GetPostion>> ExeGetLatestRrNo()
         {
