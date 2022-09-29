@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using InfoMgmtSys.Models.Accounts;
+using InfoMgmtSys.Security;
 
 namespace InfoMgmtSys.Controllers
 {
@@ -92,6 +93,14 @@ namespace InfoMgmtSys.Controllers
             using var db = new AppDB();
             var list = Login.ExeLogin(db, loginParams);
             return list;
+        }
+        [HttpGet("LoginWithToken")]
+        public ActionResult<string> ExeLoginWithToken([FromQuery] LoginWithToken.LoginParams loginParams)
+
+        {
+            using var db = new AppDB();
+            string token = LoginWithToken.ExeGetToken(db, loginParams);
+            return token;
         }
         private IActionResult ExeResult(bool result)
         {

@@ -4,7 +4,6 @@
     {
         public string? Issued_to { get; set; }
         public int Cycle_no { get; set; }
-        public int RR_no { get; set; }
         public string? Date_time { get; set; }
         public int Terms { get; set; }
         public int Collection_terms { get; set; }

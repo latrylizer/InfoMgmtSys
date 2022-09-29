@@ -11,6 +11,7 @@ namespace InfoMgmtSys.Controllers
         {
             return View();
         }
+
         [HttpPost("AddIde")]
         public IActionResult AddIde([FromForm] AddIde addIde)
         {
@@ -19,6 +20,7 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
+
         [HttpPost("AddIdeOrders")]
         public IActionResult AddIdeOrders([FromForm] AddIdeOrders addIdeOrders)
         {
@@ -27,7 +29,7 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
-        [HttpPost("Addb CollectionIdeOrders")]
+        [HttpPost("AddCollectionIdeOrders")]
         public IActionResult AddCollectionIdeOrders([FromForm] AddCollectionIdeOrders addCollectionIdeOrders)
         {
             using var db = new AppDB();
@@ -35,6 +37,25 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
+        [HttpPost("AddMultipleCollectionIdeOrders")]
+        public IActionResult AddMultipleCollectionIdeOrders([FromBody] List<AddMultipleCollectionIdeOders> addMultipleCollectionIdeOders)
+        {
+            using var db = new AppDB();
+            var collectionOrders = new AddMultipleCollectionIdeOders();
+            bool isExecuted = collectionOrders.ExeAddMultipleCollectionIdeOrders(db, addMultipleCollectionIdeOders);
+            db.Exeresult(isExecuted);
+            return ExeResult(isExecuted);
+        }
+        [HttpPost("AddIdeWithOrders")]
+        public IActionResult AddIdeWithOrders([FromBody] AddIdeWithOrders addIdeWithOrders)
+        {
+            using var db = new AppDB();
+            bool isExecuted = addIdeWithOrders.ExeAddIdeWithOrders(db, addIdeWithOrders);
+            db.Exeresult(isExecuted);
+            return ExeResult(isExecuted);
+        }
+
+
         [HttpPut("UpdateIde")]
         public IActionResult UpdateIde([FromForm] UpdateIde updateIde)
         {
@@ -104,6 +125,16 @@ namespace InfoMgmtSys.Controllers
             object obj = new object();
             var list = GetIncompleteIde.ExeGetIncompleteIde(db, obj);
             return list;
+        }
+        [HttpGet("GetAllIdeWithOrdersByCurrentMonth")]
+        public ActionResult<List<GetAllIdeWithOrdersByCurrentMonth>> ExeGetAllIdeWithOrdersByCurrentMonth()
+        {
+            return GetAllIdeWithOrdersByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
+        }
+        [HttpGet("GetAllIdeWithOrdersAndCollectionByCurrentMonth")]
+        public ActionResult<List<GetAllIdeWithOrdersAndCollectionByCurrentMonth>> ExeGetAllIdeWithOrdersAndCollectionByCurrentMonth()
+        {
+            return GetAllIdeWithOrdersAndCollectionByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
         }
         private IActionResult ExeResult(bool result)
         {

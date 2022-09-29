@@ -20,6 +20,16 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
+        [HttpPost("AddRdeWithOrders")]
+        public IActionResult AddRdeWithOrders([FromBody] AddRdeWithOrders addRdeWithOrders)
+        {
+            using var db = new AppDB();
+            bool isExecuted = addRdeWithOrders.ExeAddRdeWithOrders(db, addRdeWithOrders);
+            db.Exeresult(isExecuted);
+            return ExeResult(isExecuted);
+        }
+       
+
         [HttpPost("AddRdeOrders")]
         public IActionResult AddRdeOrders([FromForm] AddRdeOrders addRdeOrders)
         {
@@ -89,6 +99,12 @@ namespace InfoMgmtSys.Controllers
             using var db = new AppDB();
             var list = GetIncompleteRde.ExeGetIncompleteRde(db);
             return list;
+        }
+        [HttpGet("GetAllRdeWithOrdersCurrentMonth")]
+        public ActionResult<List<GetAllRdeWithOrdersCurrentMonth>> ExeGetAllRdeWithOrdersCurrentMonth()
+        {
+            var e = GetAllRdeWithOrdersCurrentMonth.ExeGetAllRdeWithOrdersCurrentMonth();
+            return e;
         }
 
 

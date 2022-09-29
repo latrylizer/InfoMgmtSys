@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InfoMgmtSys.Controllers
 {
@@ -8,6 +9,7 @@ namespace InfoMgmtSys.Controllers
         {
             return View();
         }
+        [Authorize]
         [HttpGet("GetConnection")]
         public ActionResult GetConnection()
         {

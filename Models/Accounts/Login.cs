@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Reflection;
+using InfoMgmtSys.Security;
 
 namespace InfoMgmtSys.Models.Accounts
 {
@@ -14,6 +15,8 @@ namespace InfoMgmtSys.Models.Accounts
         public int Can_delete { get; set; }
         public int Can_Add { get; set; }
         public int Can_view { get; set; }
+        
+        
 
         public static List<Login> ExeLogin(AppDB db, Object obj)
         {
@@ -39,6 +42,7 @@ namespace InfoMgmtSys.Models.Accounts
                 }
                 e.Add(obj);
             };
+           
             return e;
         }
         public class LoginParams
