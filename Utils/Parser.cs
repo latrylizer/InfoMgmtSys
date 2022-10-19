@@ -37,7 +37,7 @@ namespace InfoMgmtSys.Utils
             {
                 if (dr.IsDBNull(dr.GetOrdinal(data)))
                 {
-                    prop.SetValue(obj, "0000-00-00", null);
+                    prop.SetValue(obj, "", null);
                 }
                 else
                 {
@@ -54,6 +54,66 @@ namespace InfoMgmtSys.Utils
                 {
                     prop.SetValue(obj, dr.GetDouble(data), null);
                 }
+            }
+        }
+        public static void containObject(object obj, object newObj, object prevObj)
+        {
+            for (int a = 0; a < obj.GetType().GetProperties().Length; a++)
+            {
+                string propName = obj.GetType().GetProperties()[a].Name;
+                var property = obj.GetType().GetProperty(propName);
+                var newProperty = newObj.GetType().GetProperty(propName);
+                var prevProperty = prevObj.GetType().GetProperty(propName);
+                var type = property!.PropertyType.Name;
+                var value = property!.GetValue(obj, null);
+                var prevValue = prevProperty!.GetValue(prevObj, null);
+
+                if (value == null)
+                {
+                    newProperty!.SetValue(newObj, prevValue, null);
+                }
+                else
+                {
+                    newProperty!.SetValue(newObj, value, null);
+                }
+            }
+        }
+        public static List<string> showChanged(object obj, object prevObj)
+        {
+            var logs = new List<string>();
+            for (int i = 0; i < obj.GetType().GetProperties().Length; i++)
+            {
+                string propName = obj.GetType().GetProperties()[i].Name.ToString();
+                var property = obj.GetType().GetProperty(propName);
+                var prevProperty = prevObj.GetType().GetProperty(propName);
+                dynamic? value = property!.GetValue(obj, null) == null ? "null" : property!.GetValue(obj, null);
+                dynamic? prevValue = prevProperty!.GetValue(prevObj, null);
+                var type = value!.GetType().Name;
+                if (type == "String")
+                {
+                    if (value != "null" && value != prevValue)
+                    {
+                        logs.Add(propName + ": " + prevValue!.ToString() + " => " + value!.ToString());
+                    }
+
+                }
+                else
+                {
+                    if (value != prevValue && value != 0)
+                    {
+                        logs.Add(propName + ": " + prevValue!.ToString() + " => " + value!.ToString());
+                    }
+                }
+
+            }
+            if (logs.Count > 0)
+            {
+                return logs;
+            }
+            else
+            {
+                logs.Add("No Changes");
+                return logs;
             }
         }
     }

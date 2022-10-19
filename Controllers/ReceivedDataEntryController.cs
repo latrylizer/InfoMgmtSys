@@ -2,12 +2,14 @@
 using InfoMgmtSys.Models.DataEntry.Warehouseman.ReceivedDataEntry;
 using InfoMgmtSys.Models.DataEntry.ApIncharge.ReceivedDataEntry;
 using InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry;
+using InfoMgmtSys.Security;
 
 
 namespace InfoMgmtSys.Controllers
 {
     public class ReceivedDataEntryController : Controller
     {
+
         public IActionResult Index()
         {
             return View();
@@ -23,10 +25,8 @@ namespace InfoMgmtSys.Controllers
         [HttpPost("AddRdeWithOrders")]
         public IActionResult AddRdeWithOrders([FromBody] AddRdeWithOrders addRdeWithOrders)
         {
-            using var db = new AppDB();
-            bool isExecuted = addRdeWithOrders.ExeAddRdeWithOrders(db, addRdeWithOrders);
-            db.Exeresult(isExecuted);
-            return ExeResult(isExecuted);
+            string isExecuted = addRdeWithOrders.ExeAddRdeWithOrders(addRdeWithOrders);
+            return ExeResultWithData(isExecuted, addRdeWithOrders);
         }
        
 
@@ -44,6 +44,13 @@ namespace InfoMgmtSys.Controllers
             bool isExecuted = updateRde.ExeUpdateRde(db, updateRde);
             return ExeResult(isExecuted);
         }
+        [HttpPut("UpdateRdeWithOrders")]
+        public IActionResult UpdateRdeWithOrders([FromBody] UpdateRdeWithOrdersByRrNo updateRdeWithOrdersByRrNo)
+        {
+          string isExecuted = updateRdeWithOrdersByRrNo.ExeUpdateRdeWithOrders(updateRdeWithOrdersByRrNo);
+          return ExeResultWithData(isExecuted, updateRdeWithOrdersByRrNo);
+        }
+        
         [HttpPut("UpdateRdeOrders")]
         public IActionResult UpdateRdeOrders([FromForm] UpdateRdeOrders updateRdeOrders)
         {
@@ -65,7 +72,13 @@ namespace InfoMgmtSys.Controllers
             bool isExecuted = updateAllRdeOrderEntryNo.ExeUpdateAllRdeOrderEntryNo(db, updateAllRdeOrderEntryNo);
             return ExeResult(isExecuted);
         }
-       [HttpGet("GetRdeByRrNo")]
+        [HttpPut("UpdateAllRdeWithOrdersByRrNo")]
+        public IActionResult UpdateAllRdeWithOrdersByRrNo([FromBody] UpdateAllRdeWithOrdersByRrNo updateAllRdeWithOrdersByRrNo)
+        {
+            var isExecuted = updateAllRdeWithOrdersByRrNo.ExeUpdateAllRdeWithOrdersByRrNo(updateAllRdeWithOrdersByRrNo);
+            return ExeResultWithDataGet(isExecuted);
+        }
+        [HttpGet("GetRdeByRrNo")]
         public ActionResult<List<GetRdeByRrNo>> ExeGetRdeByRrNo([FromQuery] GetRdeByRrNo.GetRdeByRrNoParams getRdeByRrNoParams )
         {
             using var db = new AppDB();
@@ -80,11 +93,11 @@ namespace InfoMgmtSys.Controllers
             return list;
         }
         [HttpGet("GetRdeSummaryReport")]
-        public ActionResult<List<GetRdeSummaryReport>> ExeGetRdeOrderByRrNo([FromQuery] GetRdeSummaryReport.GetRdeSummaryReportParams getRdeSummaryReportParams)
+        public IActionResult ExeGetRdeOrderByRrNo([FromQuery] GetRdeSummaryReport.GetRdeSummaryReportParams getRdeSummaryReportParams)
         {
             using var db = new AppDB();
-            var list = GetRdeSummaryReport.ExeGetRdeSummaryReport(db, getRdeSummaryReportParams);
-            return list;
+            var list = GetRdeSummaryReport.ExeGetRdeSummaryReport(getRdeSummaryReportParams);
+            return ExeResultWithDataGet(list);
         }
         [HttpGet("GetLatestRrNo")]
         public ActionResult<List<GetLatestRrNo>> ExeGetLatestRrNo()
@@ -101,10 +114,16 @@ namespace InfoMgmtSys.Controllers
             return list;
         }
         [HttpGet("GetAllRdeWithOrdersCurrentMonth")]
-        public ActionResult<List<GetAllRdeWithOrdersCurrentMonth>> ExeGetAllRdeWithOrdersCurrentMonth()
+        public IActionResult ExeGetAllRdeWithOrdersCurrentMonth()
         {
             var e = GetAllRdeWithOrdersCurrentMonth.ExeGetAllRdeWithOrdersCurrentMonth();
-            return e;
+            return ExeResultWithDataGet(e);
+        }
+        [HttpGet("GetAllRdeWithOrdersBySearch")]
+        public IActionResult ExeGetAllRdeWithOrdersBySearch([FromQuery] GetAllRdeWithOrdersBySearch.SearchParam searchParam)
+        {
+            var e = GetAllRdeWithOrdersBySearch.ExeGetAllRdeWithOrdersBySearch(searchParam);
+            return ExeResultWithDataGet(e);
         }
 
 
@@ -112,6 +131,31 @@ namespace InfoMgmtSys.Controllers
         {
             return result ? Ok() : BadRequest();
         }
-       
+        private IActionResult ExeResultWithDataGet(dynamic data)
+        {
+            var dType = ((object)data).GetType().Name;
+            if(dType == "String")
+            {
+                return BadRequest( RequestResult.ExeResponse("Error", data));
+            }
+            else
+            {
+                return Ok(RequestResult.ExeResponse("Success", data));
+            }
+        }
+
+        private IActionResult ExeResultWithData(string result, dynamic data)
+        {
+            if (result == "Success")
+            {
+                return Ok(RequestResult.ExeResponse(result, data));
+            }
+            else
+            {
+                return BadRequest(RequestResult.ExeResponse("Error", result));
+            }
+
+        }
+
     }
 }

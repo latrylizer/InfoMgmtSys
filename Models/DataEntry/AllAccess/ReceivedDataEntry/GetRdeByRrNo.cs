@@ -19,12 +19,14 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         public string? Trucker { get; set; }
         public string? Trucker_plate_no { get; set; }
         public string? Warehouse { get; set; }
-        public string? Service_provider { get; set; }
         public double Total_amount_payable_to_trucker { get; set; }
         public int Is_complete { get; set; }
         public static List<GetRdeByRrNo> ExeGetRdeByRrNo(AppDB db, object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_rde_by_RR_no"));
+            var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_rde_by_RR_no"));
+            db.conClose();
+
+            return toList;
         }
         public static List<GetRdeByRrNo> ToList(MySqlDataReader dr)
         {

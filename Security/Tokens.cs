@@ -16,17 +16,39 @@ namespace InfoMgmtSys.Security
             _configuration = configuration;
            
         }
-        public static string CreateToken()
+        public class UserInfo
         {
+            public string? Name { get; set; }
+            public string? Role { get; set; }
+        }
+        
+        public static string CreateToken(string name, string role)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Role, role)
+            };
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string val = config.GetValue<string>("AppSettings:Token");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(val));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
+                claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds );
            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
                 return jwt; 
+        }
+        public UserInfo DecodeToken(string token)
+        {
+            var userInfo = new UserInfo();
+
+            return userInfo;
+        }
+        public void AddLog()
+        {
+
         }
     }
 }

@@ -15,7 +15,6 @@
         public string? Trucker { get; set; }
         public string? Trucker_plate_no { get; set; }
         public string? Warehouse { get; set; }
-        public string? Service_provider { get; set; }
         public double Total_amount_payable_to_trucker { get; set; }
         public int Is_complete { get; set; }
 

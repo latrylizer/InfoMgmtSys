@@ -17,10 +17,11 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
             [FromHeader]
             public int RR_no { get; set; }
         }
-
         public static List<GetRdeOrderByRrNo> ExeGetRdeOrderByRrNo(AppDB db, object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_rde_order_by_rr_no"));
+            var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_rde_order_by_rr_no"));
+            db.conClose();
+            return toList;
         }
         public static List<GetRdeOrderByRrNo> ToList(MySqlDataReader dr)
         {

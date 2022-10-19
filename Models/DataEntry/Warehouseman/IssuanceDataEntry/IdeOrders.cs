@@ -9,14 +9,14 @@
         public List<AddIdeOrders> GetOrderList(AddIdeWithOrders addIdeWithOrders, int MIS_no)
         {
             var e = new List<AddIdeOrders>();
-            for (int num1 = 0; num1 < addIdeWithOrders.Order_list!.Count; num1++)
+            for (int num1 = 0; num1 < addIdeWithOrders.Orders!.Count; num1++)
             {
                 var orders = new AddIdeOrders
                 {
                     MIS_no = MIS_no,
-                    Item_Description = addIdeWithOrders.Order_list![num1].Item_Description,
-                    UOM = addIdeWithOrders.Order_list![num1].UOM,
-                    Qty = addIdeWithOrders.Order_list![num1].Qty,
+                    Item_Description = addIdeWithOrders.Orders![num1].Item_Description,
+                    UOM = addIdeWithOrders.Orders![num1].UOM,
+                    Qty = addIdeWithOrders.Orders![num1].Qty,
                 };
                 e.Add(orders);
             }

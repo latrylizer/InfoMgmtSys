@@ -27,8 +27,11 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman
 
         public static List<GetReviewSheet> GetDataEntryReveivedReviewSheet(AppDB db, object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_receiving_data_entry_review_sheet"));
+            var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_receiving_data_entry_review_sheet"));
+            db.conClose();
+            return toList;
         }
+           
         public static List<GetReviewSheet> ToList(MySqlDataReader dr)
         {
             var e = new List<GetReviewSheet>();

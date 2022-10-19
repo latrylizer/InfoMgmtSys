@@ -12,6 +12,8 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         public string? Grower { get; set; }
         public int RR_no { get; set; }
         public string? Date_time { get; set; }
+        public string? Due_date { get; set; }
+        public string? Funding_date { get; set; }
         public string? PO_reference { get; set; }
         public int DR_no { get; set; }
         public int APV_no { get; set; }
@@ -25,13 +27,23 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         public double EWT { get; set; }
         public double Admin_fee { get; set; }
 
-        public static List<GetRdeSummaryReport> ExeGetRdeSummaryReport(AppDB db, object obj)
+        public static dynamic ExeGetRdeSummaryReport(object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_rde_summary_report"));
+            try
+            {
+                var db = new AppDB();
+                var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_rde_summary_report"));
+                db.conClose();
+                return toList;
+            }
+            catch(Exception ex)
+            {
+                return ex.Message;
+            }
+           
         }
         public class GetRdeSummaryReportParams
         {
-            [FromHeader]
             public int RR_no { get; set; }
         }
         public static List<GetRdeSummaryReport> ToList(MySqlDataReader dr)

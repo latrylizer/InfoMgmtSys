@@ -10,7 +10,16 @@
 
         public bool ExeUpdateAllIdeOrderByEntryNo(AppDB db, UpdateAllIdeOrderByEntryNo updateAllIdeOrderByEntryNo)
         {
-            return db.AddStoredProc(db, updateAllIdeOrderByEntryNo, "Update_all_ide_order_by_entry_no");
+            try
+            {
+                return db.AddStoredProc(db, updateAllIdeOrderByEntryNo, "Update_all_ide_order_by_entry_no");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
     }
 }

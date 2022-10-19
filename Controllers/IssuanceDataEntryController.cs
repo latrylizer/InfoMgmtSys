@@ -2,6 +2,7 @@
 using InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry;
 using InfoMgmtSys.Models.DataEntry.ApIncharge.IssuanceDataEntry;
 using InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry;
+using InfoMgmtSys.Security;
 
 namespace InfoMgmtSys.Controllers
 {
@@ -40,19 +41,15 @@ namespace InfoMgmtSys.Controllers
         [HttpPost("AddMultipleCollectionIdeOrders")]
         public IActionResult AddMultipleCollectionIdeOrders([FromBody] List<AddMultipleCollectionIdeOders> addMultipleCollectionIdeOders)
         {
-            using var db = new AppDB();
             var collectionOrders = new AddMultipleCollectionIdeOders();
-            bool isExecuted = collectionOrders.ExeAddMultipleCollectionIdeOrders(db, addMultipleCollectionIdeOders);
-            db.Exeresult(isExecuted);
-            return ExeResult(isExecuted);
+            string exeResult = collectionOrders.ExeAddMultipleCollectionIdeOrders(addMultipleCollectionIdeOders);
+            return ExeResultWithData(exeResult, addMultipleCollectionIdeOders);
         }
         [HttpPost("AddIdeWithOrders")]
         public IActionResult AddIdeWithOrders([FromBody] AddIdeWithOrders addIdeWithOrders)
         {
-            using var db = new AppDB();
-            bool isExecuted = addIdeWithOrders.ExeAddIdeWithOrders(db, addIdeWithOrders);
-            db.Exeresult(isExecuted);
-            return ExeResult(isExecuted);
+            string exeResult = addIdeWithOrders.ExeAddIdeWithOrders(addIdeWithOrders);
+            return ExeResultWithData(exeResult, addIdeWithOrders);
         }
 
 
@@ -71,6 +68,13 @@ namespace InfoMgmtSys.Controllers
             bool isExecuted = updateIdeOrders.ExeUpdateIdeOrders(db, updateIdeOrders);
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
+        }
+        [HttpPut("UpdateIdeWithOrders")]
+        public IActionResult ExeUpdateIdeWithOrders([FromBody] Models.DataEntry.ApIncharge.IssuanceDataEntry.UpdateIdeWithOrdersByMisNo updateIdeWithOrders)
+        {
+            using var db = new AppDB();
+            string exeResult = updateIdeWithOrders.ExeUpdateIdeWithOrders(updateIdeWithOrders);
+            return ExeResultWithData(exeResult, updateIdeWithOrders);
         }
         [HttpPut("UpdateAllIdeByMisNo")]
         public IActionResult UpdateAllIdeByMisNo([FromForm] UpdateAllIdeByMisNo updateAllIdeByMisNo)
@@ -91,10 +95,14 @@ namespace InfoMgmtSys.Controllers
         [HttpPut("UpdateAllCollectionOfIdeOrderByEntryNo")]
         public IActionResult UpdateAllCollectionOfIdeOrderByEntryNo([FromForm] UpdateAllCollectionOfIdeOrderByEntryNo updateAllCollectionOfIdeOrderByEntryNo)
         {
-            using var db = new AppDB();
-            bool isExecuted = updateAllCollectionOfIdeOrderByEntryNo.ExeUpdateAllCollectionOfIdeOrderByEntryNo(db, updateAllCollectionOfIdeOrderByEntryNo);
-            db.Exeresult(isExecuted);
-            return ExeResult(isExecuted);
+            string exeResult = updateAllCollectionOfIdeOrderByEntryNo.ExeUpdateAllCollectionOfIdeOrderByEntryNo(updateAllCollectionOfIdeOrderByEntryNo);
+            return ExeResultWithData(exeResult, updateAllCollectionOfIdeOrderByEntryNo);
+        }
+        [HttpPut("UpdateAllIdeWithOrders")]
+        public IActionResult UpdateAllIdeWithOrders([FromBody] UpdateAllIdeWithOrdersByMisNo updateAllIdeWithOrdersByMisNo)
+        {
+            dynamic exeResult = updateAllIdeWithOrdersByMisNo.ExeUpdateIdeWithOrders(updateAllIdeWithOrdersByMisNo);
+            return ExeResultWithDataGet(exeResult);
         }
         [HttpGet("GetIdeByMisNo")]
         public ActionResult<List<GetIdeByMisNo>> ExeGetIdeByMisNo([FromQuery] GetIdeByMisNo.GetIdeByMisNoParams getIdeByMisNo)
@@ -112,11 +120,12 @@ namespace InfoMgmtSys.Controllers
             return list;
         }
         [HttpGet("GetCollectionOfIdeOrdersSummary")]
-        public ActionResult<List<GetCollectionOfIdeOrdersSummary>> ExeGetCollectionOfIdeOrdersSummary([FromQuery] GetCollectionOfIdeOrdersSummary.GetCollectionOfIdeOrdersSummaryParams getCollectionOfIdeOrdersSummaryParams)
+        public IActionResult ExeGetCollectionOfIdeOrdersSummary([FromQuery] GetCollectionOfIdeOrdersSummary.GetCollectionOfIdeOrdersSummaryParams getCollectionOfIdeOrdersSummaryParams)
         {
             using var db = new AppDB();
             var list = GetCollectionOfIdeOrdersSummary.ExeGetCollectionOfIdeOrdersSummary(db, getCollectionOfIdeOrdersSummaryParams);
-            return list;
+            return ExeResultWithDataGet(list);
+
         }
         [HttpGet("GetIncompleteIde")]
         public ActionResult<List<GetIncompleteIde>> ExeGetIncompleteIde()
@@ -127,18 +136,51 @@ namespace InfoMgmtSys.Controllers
             return list;
         }
         [HttpGet("GetAllIdeWithOrdersByCurrentMonth")]
-        public ActionResult<List<GetAllIdeWithOrdersByCurrentMonth>> ExeGetAllIdeWithOrdersByCurrentMonth()
+        public IActionResult ExeGetAllIdeWithOrdersByCurrentMonth()
         {
-            return GetAllIdeWithOrdersByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
+            var e = GetAllIdeWithOrdersByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
+            return ExeResultWithDataGet(e);
+        }
+        [HttpGet("GetAllIdeWithOrdersBySearch")]
+        public IActionResult ExeGetAllIdeWithOrdersBySearch([FromQuery] GetIdeWithOrdersBySearch.SearchParam searchParam )
+        {
+            var e = GetIdeWithOrdersBySearch.ExeGetAllIdeWithOrdersBySearch(searchParam);
+            return ExeResultWithDataGet(e);
         }
         [HttpGet("GetAllIdeWithOrdersAndCollectionByCurrentMonth")]
-        public ActionResult<List<GetAllIdeWithOrdersAndCollectionByCurrentMonth>> ExeGetAllIdeWithOrdersAndCollectionByCurrentMonth()
+        public IActionResult ExeGetAllIdeWithOrdersAndCollectionByCurrentMonth()
         {
-            return GetAllIdeWithOrdersAndCollectionByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
+            var e = GetAllIdeWithOrdersAndCollectionByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
+            return ExeResultWithDataGet(e);
         }
         private IActionResult ExeResult(bool result)
         {
             return result ? Ok() : BadRequest();
+        }
+        private IActionResult ExeResultWithDataGet(dynamic data)
+        {
+            var dType = ((object)data).GetType().Name;
+            if (dType == "String")
+            {
+                return BadRequest( RequestResult.ExeResponse("Error", data));
+            }
+            else
+            {
+                return Ok(RequestResult.ExeResponse("Success", data));
+            }
+        }
+
+        private IActionResult ExeResultWithData(string result, dynamic data)
+        {
+            if (result == "Success")
+            {
+                return Ok(RequestResult.ExeResponse(result, data));
+            }
+            else
+            {
+                return BadRequest(RequestResult.ExeResponse("Error", result));
+            }
+
         }
     }
 }

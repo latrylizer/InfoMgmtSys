@@ -14,14 +14,15 @@ namespace InfoMgmtSys.Models.Accounts
 
             if (data.Count > 0)
             {
-                var token = Tokens.CreateToken();
+                var token = Tokens.CreateToken(data[0].First_name + " " + data[0].Last_name, data[0].Position_name!);
                 return token;
             }
             else
             {
                 return "Account don't exist";
             }
-            
+
+
         }
         public static List<Login> ToList(MySqlDataReader dr)
         {

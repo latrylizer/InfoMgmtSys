@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using InfoMgmtSys.Models.DataEntry;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InfoMgmtSys
 {
@@ -43,8 +44,8 @@ namespace InfoMgmtSys
         }
         public AppDB()
         {
-            conn = new MySqlConnection(connectionString);
-            conn.Open();
+                conn = new MySqlConnection(connectionString);
+                conn.Open();
         }
 
         public MySqlCommand CreateCommand (string query)
@@ -81,6 +82,7 @@ namespace InfoMgmtSys
                 db.Param(query, name, value);
             }
             var hasRows = query.ExecuteNonQuery();
+            conn.Close();
             return hasRows == 1; ;
         }
         public MySqlDataReader ExeDrStoredProc(AppDB db,object obj, string storedProc)
@@ -93,7 +95,9 @@ namespace InfoMgmtSys
                 string value = obj.GetType().GetProperties()[num1].GetValue(obj, null)?.ToString() ?? "";
                 db.Param(query, name, value);
             }
-            return query.ExecuteReader();
+            var dr = query.ExecuteReader();
+            return dr;
+
         }
         public void Exeresult(bool result)
         {
@@ -103,7 +107,10 @@ namespace InfoMgmtSys
             }
             else Console.WriteLine("Insert Failed");
         }
-        
+        public void conClose()
+        {
+            conn.Close();
+        }
         public void Dispose() => conn.Dispose();
     }
 }

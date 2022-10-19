@@ -14,14 +14,13 @@
             public string? Start_date_of_collection { get; set; }
             public string? Due_date { get; set; }
             public string? Mark_up { get; set; }
-            public double Admin_fee { get; set; }
-            public string? Collection_terms { get; set; }
-            public int Collection_terms_weekly { get; set; }
+            public int Collection_terms { get; set; }
+            public string? Collection_terms_in_words { get; set; }
             public string? Service_provider { get; set; }
             public double Total_amount_payable_to_trucker { get; set; }
             public int Is_complete { get; set; }
         }
-        public class IdeOrder2: CollectionOfOrders
+        public class IdeOrder2: IdeCollectionOfOrders
         {
             public int Entry_no { get; set; }
             public int MIS_no { get; set; }
@@ -38,29 +37,29 @@
             public string? Particulars { get; set; }
             public double Amount { get; set; }
         }
-        public class CollectionOfOrders
+        public class IdeCollectionOfOrders
         {
-            public List<CollectionOfOrder>? AllCollectionOfOrders  { get; set; }
+            public List<CollectionOfOrder>? Collection_of_orders  { get; set; }
             public class CollectionOfOrdersParams
             {
                 public int IDE_order_no { get; set; }
             }
-            public CollectionOfOrders()
+            public IdeCollectionOfOrders()
             {
-                this.AllCollectionOfOrders = new List<CollectionOfOrder>(); 
+                this.Collection_of_orders = new List<CollectionOfOrder>(); 
             }
         }
 
         public class IdeOrders2
         {
-            public List<IdeOrder2>? AllIdeOrders { get; set; }
+            public List<IdeOrder2>? Orders { get; set; }
             public class IdeOrders2Param
             {
                 public int MIS_no { get; set; }
             }
             public IdeOrders2()
             {
-                this.AllIdeOrders = new List<IdeOrder2>();
+                this.Orders = new List<IdeOrder2>();
             }
         }
     }

@@ -25,17 +25,25 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
         public double Total_advances { get; set; }
         public string? Particulars { get; set; }
         public int Terms { get; set; }
-        public string? Collection_terms { get; set; }
-        public int Collection_terms_weekly { get; set; }
+        public int Collection_terms { get; set; }
+        public string? Collection_terms_in_words { get; set; }
         public string? Start_date_of_collection { get; set; }
         public string? Due_date { get; set; }
         public string? Due_for_collection { get; set; }
         public string? Date_time { get; set; }
-        public double Amount { get; set; }
+        public double Amount_collected { get; set; }
 
-        public static List<GetCollectionOfIdeOrdersSummary> ExeGetCollectionOfIdeOrdersSummary(AppDB db, object obj)
+        public static dynamic ExeGetCollectionOfIdeOrdersSummary(AppDB db, object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_collection_of_ide_orders_summary"));
+            try
+            {
+                return ToList(db.ExeDrStoredProc(db, obj, "Get_collection_of_ide_orders_summary"));
+
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public static List<GetCollectionOfIdeOrdersSummary> ToList(MySqlDataReader dr)
@@ -65,7 +73,6 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
 
         public class GetCollectionOfIdeOrdersSummaryParams
         {
-            [FromHeader]
             public int MIS_no { get; set; }
         }
 

@@ -19,7 +19,6 @@ D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\Microsoft.Identity
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\MySql.Data.dll
-D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\Ubiety.Dns.Core.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\ZstdNet.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\BouncyCastle.Crypto.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\PubTmp\Out\Scrutor.dll

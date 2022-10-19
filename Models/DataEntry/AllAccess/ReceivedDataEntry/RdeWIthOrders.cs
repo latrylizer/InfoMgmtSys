@@ -19,16 +19,17 @@
             public string? Warehouse { get; set; }
             public double Total_amount_payable_to_trucker { get; set; }
             public int Is_complete { get; set; }
+            public class Order
+            {
+                public int Entry_no { get; set; }
+                public int RR_no { get; set; }
+                public string? Item_description { get; set; }
+                public string? UOM { get; set; }
+                public int Qty { get; set; }
+                public double Price { get; set; }
+            }
         }
-        public class AllOrders
-        {
-            public int Entry_no { get; set; }
-            public int RR_no { get; set; }
-            public string? Item_description { get; set; }
-            public string? UOM { get; set; }
-            public int Qty { get; set; }
-            public double Price { get; set; }
-        }
+       
        
     }
     

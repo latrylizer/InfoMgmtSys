@@ -9,35 +9,36 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.ReceivedDataEntry
         public string? Supplier { get; set; }
         public int Terms { get; set; }
         public string? Grower { get; set; }
-        public string? Date_time { get; set; }
         public string? PO_reference { get; set; }
         public int DR_no { get; set; }
         public string? Trucker { get; set; }
         public string? Trucker_plate_no { get; set; }
         public string? Warehouse { get; set; }
-        public List<Orders>? Ordered_items { get; set; }
+        public List<Orders>? Orders { get; set; }
 
-        public bool ExeAddRdeWithOrders(AppDB db, AddRdeWithOrders addRdeWithOrders)
+        public string ExeAddRdeWithOrders(AddRdeWithOrders addRdeWithOrders)
         {
             try
             {
+                var db = new AppDB();
+
                 var RdeContainer = new Rde();
                 var Rde = RdeContainer.GetRde(addRdeWithOrders);
 
                 int RR_no = ToList(db.ExeDrStoredProc(db, Rde, "Add_rde_return_rr_no"))[0].RR_no;
                 var OrderContainer = new Orders();
                 var OrderList = OrderContainer.GetOrders(addRdeWithOrders, RR_no);
-                db = new AppDB();
                 for (int num1 = 0; num1 < OrderList.Count; num1++)
                 {
+                    db = new AppDB();
                     db.AddStoredProc(db, OrderList[num1], "Add_rde_orders");
                 }
-
-                return true;
+                return "Success";
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                Console.WriteLine(ex.Message);
+                return ex.Message;
             }
              
         }

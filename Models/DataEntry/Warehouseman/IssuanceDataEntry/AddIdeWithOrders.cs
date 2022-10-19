@@ -7,33 +7,33 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
     {
         public string? Issued_to { get; set; }
         public int Cycle_no { get; set; }
-        public string? Date_time { get; set; }
-        public int Terms { get; set; }
-        public int Collection_terms { get; set; }
         public string? Service_provider { get; set; }
-        public double Total_amount_payable_to_trucker { get; set; }
-        public List<IdeOrders>? Order_list { get; set; }
+        public int Hectarage { get; set; }
 
-        public bool ExeAddIdeWithOrders(AppDB db, AddIdeWithOrders addIdeWithOrders)
+        public List<IdeOrders>? Orders { get; set; }
+
+        public string ExeAddIdeWithOrders(AddIdeWithOrders addIdeWithOrders)
         {
            
             try
             {
+                var db = new AppDB();
                 var IdeContainer = new Ide();
                 var Ide = IdeContainer.GetIde(addIdeWithOrders);
                 int MIS_no = ToList(db.ExeDrStoredProc(db, Ide, "Add_ide_return_mis_no"))[0].MIS_no;
                 var OrderContainer = new IdeOrders();
                 var OrderList = OrderContainer.GetOrderList(addIdeWithOrders, MIS_no);
-                db = new AppDB();
                 for (int num1 = 0; num1 < OrderList.Count; num1++)
                 {
+                    db = new AppDB();
                     db.AddStoredProc(db, OrderList[num1], "Add_ide_orders");
                 }
-                return true;
+                return "Success";
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                Console.WriteLine(ex.Message);
+                return ex.Message;
             }
 
            

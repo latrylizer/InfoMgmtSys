@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Reflection;
 using InfoMgmtSys.Security;
+using System.Web;
 
 namespace InfoMgmtSys.Models.Accounts
 {
@@ -18,32 +19,39 @@ namespace InfoMgmtSys.Models.Accounts
         
         
 
-        public static List<Login> ExeLogin(AppDB db, Object obj)
+        public static dynamic ExeLogin(AppDB db, Object obj)
         {
-            return ToList(db.ExeDrStoredProc(db, obj, "Login"));
+                return ToList(db.ExeDrStoredProc(db, obj, "Login"));
         }
-        public static List<Login> ToList(MySqlDataReader dr)
+        public static dynamic ToList(MySqlDataReader dr)
         {
-            var e = new List<Login>();
-            while (dr.Read())
+            var obj = new Login();
+            if (dr.HasRows)
             {
-                var obj = new Login();
-                var length = obj.GetType().GetProperties().Length;
-                for (int num1 = 0; num1 < length; num1++)
+                while (dr.Read())
                 {
-                    string data = obj.GetType().GetProperties()[num1].Name.ToString() ?? "";
-                    Type type = obj.GetType();
-                    PropertyInfo? prop = type.GetProperty(data);
 
-                    if (prop != null)
+                    var length = obj.GetType().GetProperties().Length;
+                    for (int num1 = 0; num1 < length; num1++)
                     {
-                        Utils.Parser.prop(obj, prop, data, dr);
+                        string data = obj.GetType().GetProperties()[num1].Name.ToString() ?? "";
+                        Type type = obj.GetType();
+                        PropertyInfo? prop = type.GetProperty(data);
+
+                        if (prop != null)
+                        {
+                            Utils.Parser.prop(obj, prop, data, dr);
+                        }
                     }
-                }
-                e.Add(obj);
-            };
+                };
+                return obj;
+            }
+            else
+            {
+                return "Account Does Not Exist";
+            }
+          
            
-            return e;
         }
         public class LoginParams
         {

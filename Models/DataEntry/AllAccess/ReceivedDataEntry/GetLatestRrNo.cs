@@ -10,7 +10,9 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         public static List<GetLatestRrNo> ExeGetLatestRrNo(AppDB db)
         {
             object obj = new object();
-            return ToList(db.ExeDrStoredProc(db,obj, "Get_latest_rr_no"));
+            var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_latest_rr_no"));
+            db.conClose();
+            return toList;
         }
 
         public static List<GetLatestRrNo> ToList(MySqlDataReader dr)

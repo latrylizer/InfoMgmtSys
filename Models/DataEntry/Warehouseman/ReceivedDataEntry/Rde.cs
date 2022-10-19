@@ -18,7 +18,6 @@
                 Supplier = addRdeWithOrders.Supplier,
                 Terms = addRdeWithOrders.Terms,
                 Grower = addRdeWithOrders.Grower,
-                Date_time = addRdeWithOrders.Date_time,
                 PO_reference = addRdeWithOrders.PO_reference,
                 DR_no = addRdeWithOrders.DR_no,
                 Trucker = addRdeWithOrders.Trucker,
@@ -27,5 +26,6 @@
             };
             return rde;
         }
+
     }
 }

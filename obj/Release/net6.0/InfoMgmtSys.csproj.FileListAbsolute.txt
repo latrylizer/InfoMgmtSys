@@ -12,7 +12,6 @@ D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\K4os.Hash.xxHash.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.OpenApi.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.Win32.SystemEvents.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\MySql.Data.dll
-D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Ubiety.Dns.Core.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\ZstdNet.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\BouncyCastle.Crypto.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Swashbuckle.AspNetCore.Swagger.dll

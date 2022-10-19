@@ -10,7 +10,9 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         public static List<GetIncompleteRde> ExeGetIncompleteRde(AppDB db)
         {
             object obj = new object() ;
-            return ToList(db.ExeDrStoredProc(db, obj, "Get_incomplete_rde"));
+            var toList = ToList(db.ExeDrStoredProc(db, obj, "Get_incomplete_rde"));
+            db.conClose();
+            return toList;
         }
 
         public static List<GetIncompleteRde> ToList(MySqlDataReader dr)

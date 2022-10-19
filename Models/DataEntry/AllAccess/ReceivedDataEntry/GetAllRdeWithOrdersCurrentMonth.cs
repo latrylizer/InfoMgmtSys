@@ -9,57 +9,68 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.ReceivedDataEntry
         {
             public int RR_no { get; set; }
         }
-        public List<RdeWIthOrders.AllOrders>? Orders { get; set; }
+        public List<RdeWIthOrders.AllRde.Order>? Orders { get; set; }
         public GetAllRdeWithOrdersCurrentMonth()
         {
-            this.Orders = new List<RdeWIthOrders.AllOrders>();
+            this.Orders = new List<RdeWIthOrders.AllRde.Order>();
         }
-        public static List<GetAllRdeWithOrdersCurrentMonth> ExeGetAllRdeWithOrdersCurrentMonth()
+        public static dynamic ExeGetAllRdeWithOrdersCurrentMonth()
         {
-            var db = new AppDB();
-            var obj = new object();
-            var d = new GetAllRdeWithOrdersCurrentMonth();
-            var list = new List<GetAllRdeWithOrdersCurrentMonth>();
-            var objOrderParms = new GetAllRdeWithOrdersCurrentMonth.OrderParams();
-
-            var rde = d.ToListRde(db.ExeDrStoredProc(db, obj, "Get_rde_by_current_month"));
-            for (int num1 =0; num1 < rde.Count; num1++)
+            try
             {
-                var SetRdeWithOrders = new GetAllRdeWithOrdersCurrentMonth();
-                var length = SetRdeWithOrders.GetType().GetProperties().Length;
-                for(int num3 = 0; num3 < length; num3++)
+                var db = new AppDB();
+                var obj = new object();
+                var d = new GetAllRdeWithOrdersCurrentMonth();
+                var list = new List<GetAllRdeWithOrdersCurrentMonth>();
+                var objOrderParms = new GetAllRdeWithOrdersCurrentMonth.OrderParams();
+
+                var rde = d.ToListRde(db.ExeDrStoredProc(db, obj, "Get_rde_by_current_month"));
+                db.conClose();
+                for (int num1 = 0; num1 < rde.Count; num1++)
                 {
-                    string propName = SetRdeWithOrders.GetType().GetProperties()[num3].Name.ToString();
-                    Type type = SetRdeWithOrders.GetType();
-                    PropertyInfo? prop = type.GetProperty(propName);
-
-                    Type rdeType = rde[num1].GetType();
-                    PropertyInfo? rdeProp = rdeType.GetProperty(propName);
-
-                    if(propName != "Orders")
+                    var SetRdeWithOrders = new GetAllRdeWithOrdersCurrentMonth();
+                    var length = SetRdeWithOrders.GetType().GetProperties().Length;
+                    for (int num3 = 0; num3 < length; num3++)
                     {
-                        Utils.Parser.ReportProps(SetRdeWithOrders,rdeProp!, propName, rde[num1]);
-                    }
-                }
-                objOrderParms.RR_no = rde[num1].RR_no;
-                db = new AppDB();
+                        string propName = SetRdeWithOrders.GetType().GetProperties()[num3].Name.ToString();
+                        Type type = SetRdeWithOrders.GetType();
+                        PropertyInfo? prop = type.GetProperty(propName);
 
-                var rdeOrders = d.TolistOrders(db.ExeDrStoredProc(db, objOrderParms, "Get_rde_order_by_rr_no"));
-                for (int num2 =0; num2 < rdeOrders.Count; num2++)
-                {
-                   SetRdeWithOrders.Orders!.Add(rdeOrders[num2]);
+                        Type rdeType = rde[num1].GetType();
+                        PropertyInfo? rdeProp = rdeType.GetProperty(propName);
+
+                        if (propName != "Orders")
+                        {
+                            Utils.Parser.ReportProps(SetRdeWithOrders, rdeProp!, propName, rde[num1]);
+                        }
+                    }
+                    objOrderParms.RR_no = rde[num1].RR_no;
+                    db = new AppDB();
+
+                    var rdeOrders = d.TolistOrders(db.ExeDrStoredProc(db, objOrderParms, "Get_rde_order_by_rr_no"));
+                    db.conClose();
+                    for (int num2 = 0; num2 < rdeOrders.Count; num2++)
+                    {
+                        SetRdeWithOrders.Orders!.Add(rdeOrders[num2]);
+                    }
+                    list.Add(SetRdeWithOrders);
                 }
-                list.Add(SetRdeWithOrders);
+                return list;
             }
-            return list;
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+           
         }
 
-        public List<RdeWIthOrders.AllOrders> TolistOrders(MySqlDataReader dr)
+        public List<RdeWIthOrders.AllRde.Order> TolistOrders(MySqlDataReader dr)
         {
-            var e = new List<RdeWIthOrders.AllOrders>();
+            var e = new List<RdeWIthOrders.AllRde.Order>();
             while (dr.Read())
             {
-                var obj = new RdeWIthOrders.AllOrders();
+                var obj = new RdeWIthOrders.AllRde.Order();
                 var length = obj.GetType().GetProperties().Length;
                 for (int num1 = 0; num1 < length; num1++)
                 {

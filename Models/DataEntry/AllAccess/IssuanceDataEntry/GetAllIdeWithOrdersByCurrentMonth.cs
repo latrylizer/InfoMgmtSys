@@ -5,44 +5,55 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
 {
     public class GetAllIdeWithOrdersByCurrentMonth:IdeWithOrders.Ide
     {
-        public static List<GetAllIdeWithOrdersByCurrentMonth> ExeGetAllIdeWithOrdersByCurrentMonth()
+        public static dynamic ExeGetAllIdeWithOrdersByCurrentMonth()
         {
-            var db = new AppDB();
-            var obj = new object();
-            var IdeWithOrders = new GetAllIdeWithOrdersByCurrentMonth();
-            var IdeOrdersParams = new IdeWithOrders.IdeOrders.IdeOrdersParam();
-            var list = new List<GetAllIdeWithOrdersByCurrentMonth>();
-
-            var ide = IdeWithOrders.ToListIde(db.ExeDrStoredProc(db, obj, "Get_ide_by_current_month"));
-           for(int num1 =0; num1 < ide.Count; num1++)
+            try
             {
-                var SetIdeWithOrders = new GetAllIdeWithOrdersByCurrentMonth();
-                var length = SetIdeWithOrders.GetType().GetProperties().Length;
-                for(int num2 = 0; num2 < length; num2++)
+                var db = new AppDB();
+                var obj = new object();
+                var IdeWithOrders = new GetAllIdeWithOrdersByCurrentMonth();
+                var IdeOrdersParams = new IdeWithOrders.IdeOrders.IdeOrdersParam();
+                var list = new List<GetAllIdeWithOrdersByCurrentMonth>();
+
+                var ide = IdeWithOrders.ToListIde(db.ExeDrStoredProc(db, obj, "Get_ide_by_current_month"));
+                db.conClose();
+                for (int num1 = 0; num1 < ide.Count; num1++)
                 {
-                    string propName = SetIdeWithOrders.GetType().GetProperties()[num2].Name.ToString();
-                    Type type = SetIdeWithOrders.GetType();
-                    PropertyInfo? prop = type.GetProperty(propName);
-
-                    Type ideType = ide[num1].GetType();
-                    PropertyInfo? ideProp = ideType.GetProperty(propName);
-
-                    if (propName != "AllIdeOrders")
+                    var SetIdeWithOrders = new GetAllIdeWithOrdersByCurrentMonth();
+                    var length = SetIdeWithOrders.GetType().GetProperties().Length;
+                    for (int num2 = 0; num2 < length; num2++)
                     {
-                        Utils.Parser.ReportProps(SetIdeWithOrders, ideProp!, propName, ide[num1]);
-                    }
+                        string propName = SetIdeWithOrders.GetType().GetProperties()[num2].Name.ToString();
+                        Type type = SetIdeWithOrders.GetType();
+                        PropertyInfo? prop = type.GetProperty(propName);
 
+                        Type ideType = ide[num1].GetType();
+                        PropertyInfo? ideProp = ideType.GetProperty(propName);
+
+                        if (propName != "Orders")
+                        {
+                            Utils.Parser.ReportProps(SetIdeWithOrders, ideProp!, propName, ide[num1]);
+                        }
+
+                    }
+                    IdeOrdersParams.MIS_no = ide[num1].MIS_no;
+                    db = new AppDB();
+                    var ideOrders = IdeWithOrders.TolistIdeOrders(db.ExeDrStoredProc(db, IdeOrdersParams, "Get_ide_orders_by_mis_no"));
+                    db.conClose();
+                    for (int num3 = 0; num3 < ideOrders.Count; num3++)
+                    {
+                        SetIdeWithOrders.Orders!.Add(ideOrders[num3]);
+                    }
+                    list.Add(SetIdeWithOrders);
                 }
-                IdeOrdersParams.MIS_no = ide[num1].MIS_no;
-                db = new AppDB();
-                var ideOrders = IdeWithOrders.TolistIdeOrders(db.ExeDrStoredProc(db, IdeOrdersParams, "Get_ide_orders_by_mis_no"));
-                for(int num3 =0; num3 < ideOrders.Count; num3++)
-                {
-                    SetIdeWithOrders.AllIdeOrders!.Add(ideOrders[num3]);
-                }
-                list.Add(SetIdeWithOrders);
+                return list;
             }
-            return list;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+           
         }
         public List<IdeWithOrders.Ide> ToListIde(MySqlDataReader dr)
         {

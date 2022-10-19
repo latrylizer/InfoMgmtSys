@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using InfoMgmtSys.Models.Accounts;
 using InfoMgmtSys.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InfoMgmtSys.Controllers
 {
@@ -87,15 +88,19 @@ namespace InfoMgmtSys.Controllers
             var list = GetAccountAccessByEmployeeId.ExeGetAccountAccessByEmployeeId(db, getAccountAccessByEmployeeIdParams);
             return list;
         }
-        [HttpGet("Login")]
-        public ActionResult<List<Login>> ExeGetAccountAccessByEmployeeId([FromQuery] Login.LoginParams loginParams)
+        [Authorize]
+        [HttpPost("Login")]
+        public ActionResult<RequestResult> ExeGetAccountAccessByEmployeeId([FromForm] Login.LoginParams loginParams)
         {
             using var db = new AppDB();
+            var header = this.HttpContext.Request.Headers.ToList()[6];
             var list = Login.ExeLogin(db, loginParams);
-            return list;
+
+            var res = RequestResult.ExeResponse("Success",list);
+            return res;
         }
-        [HttpGet("LoginWithToken")]
-        public ActionResult<string> ExeLoginWithToken([FromQuery] LoginWithToken.LoginParams loginParams)
+        [HttpPost("LoginWithToken")]
+        public ActionResult<string> ExeLoginWithToken([FromForm] LoginWithToken.LoginParams loginParams)
 
         {
             using var db = new AppDB();

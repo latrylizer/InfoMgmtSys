@@ -13,10 +13,9 @@
             public int Terms { get; set; }
             public string? Start_date_of_collection { get; set; }
             public string? Due_date { get; set; }
-            public string? Mark_up { get; set; }
-            public double Admin_fee { get; set; }
-            public string? Collection_terms { get; set; }
-            public int Collection_terms_weekly { get; set; }
+            public double Mark_up { get; set; }
+            public int Collection_terms { get; set; }
+            public string? Collection_terms_in_words { get; set; }
             public string? Service_provider { get; set; }
             public double Total_amount_payable_to_trucker { get; set; }
             public int Is_complete { get; set; }
@@ -32,14 +31,14 @@
         }
         public class IdeOrders
         {
-            public List<IdeOrder>? AllIdeOrders { get; set; }
+            public List<IdeOrder>? Orders { get; set; }
             public class IdeOrdersParam
             {
                 public int MIS_no { get; set; }
             }
             public IdeOrders()
             {
-             this.AllIdeOrders = new List<IdeOrder>();
+             this.Orders = new List<IdeOrder>();
             }
         }
        
