@@ -9,12 +9,20 @@ namespace InfoMgmtSys.Controllers
         {
             return View();
         }
-        [Authorize]
+        
         [HttpGet("GetConnection")]
         public ActionResult GetConnection()
         {
-            using var db = new AppDB();
-            return Ok();
+            try
+            {
+                using var db = new AppDB();
+                return Ok(db);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Web;
 using System.Text;
 namespace InfoMgmtSys.Security
 {
@@ -39,6 +41,7 @@ namespace InfoMgmtSys.Security
                 signingCredentials: creds );
            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
                 return jwt; 
+           
         }
         public UserInfo DecodeToken(string token)
         {
@@ -46,9 +49,31 @@ namespace InfoMgmtSys.Security
 
             return userInfo;
         }
-        public void AddLog()
+        public static RefreshToken GetRefreshToken()
         {
-
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(7),
+                Created = DateTime.Now
+            };
+            return refreshToken;
+        }
+        //public static dynamic GetClient(string token)
+        //{
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var tokenResult = handler.ReadJwtToken(token);
+        //    var userInfo = new UserInfo();
+        //    var tokenResultTolist = tokenResult.Claims.ToList();
+        //    userInfo.Name = tokenResultTolist[0].Value;
+        //    userInfo.Role = tokenResultTolist[1].Value;
+        //    return userInfo;
+        //}
+        public class RefreshToken
+        {
+            public string Token { get; set; } = string.Empty;
+            public DateTime Created { get; set; } = DateTime.Now;
+            public DateTime Expires { get; set; }
         }
     }
 }

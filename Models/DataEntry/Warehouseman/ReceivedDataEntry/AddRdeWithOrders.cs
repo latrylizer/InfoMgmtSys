@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using System.Reflection;
-
+using System.Web;
+using InfoMgmtSys.Models.Logs;
 namespace InfoMgmtSys.Models.DataEntry.Warehouseman.ReceivedDataEntry
 {
     public class AddRdeWithOrders
@@ -16,7 +17,7 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.ReceivedDataEntry
         public string? Warehouse { get; set; }
         public List<Orders>? Orders { get; set; }
 
-        public string ExeAddRdeWithOrders(AddRdeWithOrders addRdeWithOrders)
+        public string ExeAddRdeWithOrders(AddRdeWithOrders addRdeWithOrders, HttpContext httpContext)
         {
             try
             {
@@ -33,6 +34,7 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.ReceivedDataEntry
                     db = new AppDB();
                     db.AddStoredProc(db, OrderList[num1], "Add_rde_orders");
                 }
+                AddLogs.ExeAddLogs(addRdeWithOrders, httpContext, "Receiving", RR_no, "Create");
                 return "Success";
             }
             catch(Exception ex)

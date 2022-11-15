@@ -3,7 +3,7 @@
     public class AddIdeOrders
     {
         public int MIS_no { get; set; }
-        public string? Item_Description { get; set; }
+        public string? Item_description { get; set; }
         public string? UOM { get; set; }
         public int Qty { get; set; }
 

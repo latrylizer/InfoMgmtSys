@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Reflection;
+using InfoMgmtSys.Models.Logs;
 
 namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
 {
@@ -12,7 +13,7 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
 
         public List<IdeOrders>? Orders { get; set; }
 
-        public string ExeAddIdeWithOrders(AddIdeWithOrders addIdeWithOrders)
+        public string ExeAddIdeWithOrders(AddIdeWithOrders addIdeWithOrders, HttpContext httpContext)
         {
            
             try
@@ -28,6 +29,7 @@ namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
                     db = new AppDB();
                     db.AddStoredProc(db, OrderList[num1], "Add_ide_orders");
                 }
+                AddLogs.ExeAddLogs(addIdeWithOrders, httpContext, "Issuing",MIS_no, "Add");
                 return "Success";
             }
             catch(Exception ex)

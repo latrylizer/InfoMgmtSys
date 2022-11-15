@@ -4,34 +4,8 @@ using System.Reflection;
 
 namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
 {
-    public class GetCollectionOfIdeOrdersSummary
+    public class GetCollectionOfIdeOrdersSummary: CollectionOfIdeOrdersSummaryContainer
     {
-        public string? Issued_to { get; set; }
-        public int Cycle_no { get; set; }
-        public int Hectarage { get; set; }
-        public int MIS_no { get; set; }
-        public int RR_no { get; set; }
-        public string? MIS_Date { get; set; }
-        public string? Trucker { get; set; }
-        public string? Item_Description { get; set; }
-        public string? UOM { get; set; }
-        public int Qty { get; set; }
-        public double Price { get; set; }
-        public string? Mark_up { get; set; }
-        public double Total_Sales { get; set; }
-        public double Vat { get; set; }
-        public double Admin_fee { get; set; }
-        public double Trucker_cost { get; set; }
-        public double Total_advances { get; set; }
-        public string? Particulars { get; set; }
-        public int Terms { get; set; }
-        public int Collection_terms { get; set; }
-        public string? Collection_terms_in_words { get; set; }
-        public string? Start_date_of_collection { get; set; }
-        public string? Due_date { get; set; }
-        public string? Due_for_collection { get; set; }
-        public string? Date_time { get; set; }
-        public double Amount_collected { get; set; }
 
         public static dynamic ExeGetCollectionOfIdeOrdersSummary(AppDB db, object obj)
         {

@@ -1,7 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Reflection;
 using InfoMgmtSys.Utils;
-
+using InfoMgmtSys.Models.Logs;
 namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
 {
     public class UpdateAllIdeWithOrdersByMisNo
@@ -25,10 +25,16 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
         {
             Orders = new List<UpdateIdeWithOrdersContainer.UpdateAllIdeOrder>();
         }
-        public dynamic ExeUpdateIdeWithOrders(UpdateAllIdeWithOrdersByMisNo updateIdeWithOrders)
+        public dynamic ExeUpdateIdeWithOrders(UpdateAllIdeWithOrdersByMisNo updateIdeWithOrders, HttpContext httpContext)
         {
             try
             {
+                if(updateIdeWithOrders.MIS_no == 0)
+                {
+                    return "MIS no should not be 0";
+                }
+                var overrideUpdateOrderLogs = new AddLogs.OverrideUpdateOrderLogs();
+
                 var ideWithOrders = new UpdateIdeWithOrdersContainer();
                 var logs = new UpdateIdeWithOrdersContainer.UpdateAllWithWithOrdersLogs();
                 var ide = ideWithOrders.GetIde(updateIdeWithOrders);
@@ -38,6 +44,20 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
                 var db = new AppDB();
                 var prevIde = ToList(db.ExeDrStoredProc(db, getIdeParams, "Get_ide_by_mis_no_manager"));
                 db.conClose();
+                if(prevIde.MIS_no == 0)
+                {
+                    return "MIS no " +ide.MIS_no+ " does not exist";
+                }
+                if(updateIdeWithOrders.Orders !=null)
+                {
+                    for(int a =0; a < updateIdeWithOrders.Orders!.Count; a++)
+                    {
+                        if(updateIdeWithOrders.Orders[a].Entry_no == 0)
+                        {
+                            return "Entry no should be zero";
+                        }
+                    }
+                }
                 Parser.containObject(ide, newIde, prevIde);
 
                 logs.MIS_no = getIdeParams.MIS_no;
@@ -45,6 +65,14 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
 
                 db = new AppDB();
                 db.AddStoredProc(db, newIde, "Update_all_ide_by_MIS_no");
+
+                var ideLog = AddLogs.CompareObj(ide, prevIde);
+
+                if(ideLog.Count > 0)
+                {
+                    overrideUpdateOrderLogs.DataEntry = ideLog;
+                }
+                overrideUpdateOrderLogs.Orders = new List<dynamic>();
 
                 for (int a = 0; a < updateIdeWithOrders.Orders!.Count; a++)
                 {
@@ -55,6 +83,10 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
                     getIdeOrderParams.MIS_no = updateIdeWithOrders.MIS_no;
                     var prevIdeOrder = ToListOrder(db.ExeDrStoredProc(db, getIdeOrderParams, "Get_ide_order_by_entry_no_and_mis_no"));
                     db.conClose();
+                    if(prevIdeOrder.Entry_no == 0)
+                    {
+                        return "Entry no " + updateIdeWithOrders.Orders[a].Entry_no + " does not existt";
+                    }
                     Parser.containObject(updateIdeWithOrders.Orders[a], ideOrder, prevIdeOrder);
                     var orderParams = new UpdateIdeWithOrdersContainer.UpdateAllWithWithOrdersLogs.UpdateAllWithWithOrderLogs();
                     orderParams.Entry_no = ideOrder.Entry_no;
@@ -62,6 +94,17 @@ namespace InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry
                     logs.Orders!.Add(orderParams);
                     db = new AppDB();
                     db.AddStoredProc(db, ideOrder, "Update_all_ide_order_by_entry_no");
+                    var ideOrderLog = AddLogs.CompareOrderObj(updateIdeWithOrders.Orders[a].Entry_no, updateIdeWithOrders.Orders[a], prevIdeOrder);
+
+                    if(ideOrderLog.Count > 0)
+                    {
+                        overrideUpdateOrderLogs.Orders!.Add(ideOrderLog);
+                    }
+                }
+                var isChanges = AddLogs.IsNotChanges(overrideUpdateOrderLogs);
+                if (!isChanges)
+                {
+                    AddLogs.ExeAddLogs(overrideUpdateOrderLogs, httpContext, "Issuing", getIdeParams.MIS_no, "Override");
                 }
                 return logs;
             }

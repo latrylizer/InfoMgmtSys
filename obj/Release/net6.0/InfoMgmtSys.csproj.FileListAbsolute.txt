@@ -34,9 +34,6 @@ D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.AssemblyInfo.cs
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.csproj.CoreCompileInputs.cache
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.MvcApplicationPartsAssemblyInfo.cs
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.MvcApplicationPartsAssemblyInfo.cache
-D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\staticwebassets.build.json
-D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\staticwebassets.development.json
-D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\scopedcss\bundle\InfoMgmtSys.styles.css
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.csproj.CopyComplete
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.dll
 D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\refint\InfoMgmtSys.dll
@@ -54,3 +51,13 @@ D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Scrutor.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Swashbuckle.AspNetCore.Filters.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
 D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.AspNetCore.JsonPatch.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.AspNetCore.Razor.Language.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.CodeAnalysis.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Microsoft.CodeAnalysis.Razor.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Newtonsoft.Json.dll
+D:\Personal Project\InfoMgmtSys\bin\Release\net6.0\Newtonsoft.Json.Bson.dll
+D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.RazorAssemblyInfo.cache
+D:\Personal Project\InfoMgmtSys\obj\Release\net6.0\InfoMgmtSys.RazorAssemblyInfo.cs

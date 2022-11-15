@@ -1,4 +1,5 @@
-﻿namespace InfoMgmtSys.Models.DataEntry.ApIncharge.ReceivedDataEntry
+﻿using Microsoft.AspNetCore.Mvc;
+namespace InfoMgmtSys.Models.DataEntry.ApIncharge.ReceivedDataEntry
 {
     public class UpdateRdeWithOrdersContainer
     {

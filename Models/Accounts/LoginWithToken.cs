@@ -2,34 +2,63 @@
 using System.Reflection;
 using InfoMgmtSys.Security;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace InfoMgmtSys.Models.Accounts
 {
     public class LoginWithToken
     {
-        public string? Token { get; set; }
-        public static string ExeGetToken(AppDB db, object obj)
+        public class LoginResult
         {
-            var data = ToList(db.ExeDrStoredProc(db, obj, "Login"));
-
-            if (data.Count > 0)
+            public string? Name { get; set; }
+            public string? Position { get; set; }
+            public string? Token { get; set; }
+        }
+        public class UserDetail
+        {
+            public string? Position_name { get; set; }
+            public string? First_name { get; set; }
+            public string? Middle_name { get; set; }
+            public string? Last_name { get; set; }
+            public int Can_update { get; set; }
+            public int Can_delete { get; set; }
+            public int Can_Add { get; set; }
+            public int Can_view { get; set; }
+        }
+        public string? Token { get; set; }
+        public static dynamic ExeGetToken(AppDB db, object obj)
+        {
+            try
             {
-                var token = Tokens.CreateToken(data[0].First_name + " " + data[0].Last_name, data[0].Position_name!);
-                return token;
+                var data = ToList(db.ExeDrStoredProc(db, obj, "Login"));
+                var loginResult = new LoginResult();
+                if (data.First_name != null)
+                {
+                    var token = Tokens.CreateToken(data.First_name + " " + data.Last_name, data.Position_name!);
+                    loginResult.Name = data.First_name + " " + data.Last_name;
+                    loginResult.Position = data.Position_name;
+                    loginResult.Token = token;
+                    return loginResult;
+                }
+                else
+                {
+                    return "Account don't exist";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "Account don't exist";
-            }
+                return ex.Message;
+            }    
+           
 
 
         }
-        public static List<Login> ToList(MySqlDataReader dr)
+        public static UserDetail ToList(MySqlDataReader dr)
         {
-            var e = new List<Login>();
+            var obj = new UserDetail();
+
             while (dr.Read())
             {
-                var obj = new Login();
                 var length = obj.GetType().GetProperties().Length;
                 for (int num1 = 0; num1 < length; num1++)
                 {
@@ -42,9 +71,8 @@ namespace InfoMgmtSys.Models.Accounts
                         Utils.Parser.prop(obj, prop, data, dr);
                     }
                 }
-                e.Add(obj);
             };
-            return e;
+            return obj;
         }
         public class LoginParams
         {

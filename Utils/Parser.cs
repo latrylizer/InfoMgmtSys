@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using MySql.Data.MySqlClient;
+using System.Text.Json;
 namespace InfoMgmtSys.Utils
 {
     public class Parser
@@ -55,6 +56,17 @@ namespace InfoMgmtSys.Utils
                     prop.SetValue(obj, dr.GetDouble(data), null);
                 }
             }
+            else if (prop.PropertyType.Name == "Object")
+            {
+                if (dr.IsDBNull(dr.GetOrdinal(data)))
+                {
+                    prop.SetValue(obj,new object(), null);
+                }
+                else
+                {
+                    prop.SetValue(obj,JsonSerializer.Deserialize<object>(dr.GetString(data)), null);
+                }
+            }
         }
         public static void containObject(object obj, object newObj, object prevObj)
         {
@@ -65,16 +77,31 @@ namespace InfoMgmtSys.Utils
                 var newProperty = newObj.GetType().GetProperty(propName);
                 var prevProperty = prevObj.GetType().GetProperty(propName);
                 var type = property!.PropertyType.Name;
-                var value = property!.GetValue(obj, null);
-                var prevValue = prevProperty!.GetValue(prevObj, null);
-
+                dynamic? value = property!.GetValue(obj, null);
+                dynamic? prevValue = prevProperty!.GetValue(prevObj, null);
+                
                 if (value == null)
                 {
                     newProperty!.SetValue(newObj, prevValue, null);
                 }
                 else
                 {
-                    newProperty!.SetValue(newObj, value, null);
+                    if (type == "Int32")
+                    {
+                        if (value == 0)
+                        {
+                            newProperty!.SetValue(newObj, prevValue, null);
+                        }
+                        else
+                        {
+                            newProperty!.SetValue(newObj, value, null);
+                        }
+                    }
+                    else
+                    {
+                        newProperty!.SetValue(newObj, value, null);
+                    }
+                   
                 }
             }
         }

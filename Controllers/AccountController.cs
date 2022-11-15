@@ -2,11 +2,21 @@
 using InfoMgmtSys.Models.Accounts;
 using InfoMgmtSys.Security;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace InfoMgmtSys.Controllers
 {
     public class AccountController : Controller
     {
+        public class UserRefreshToken
+        {
+            public string? Username { get; set; }
+            public string? UserPosition { get; set; }
+            public string? RefreshToken { get; set; }
+            public DateTime TokenCreated { get; set; }
+            public DateTime TokenExpires { get; set; }
+        }
+        public static UserRefreshToken userToken= new UserRefreshToken();
         public IActionResult Index()
         {
             return View();
@@ -99,17 +109,95 @@ namespace InfoMgmtSys.Controllers
             var res = RequestResult.ExeResponse("Success",list);
             return res;
         }
+       
         [HttpPost("LoginWithToken")]
-        public ActionResult<string> ExeLoginWithToken([FromForm] LoginWithToken.LoginParams loginParams)
+        public IActionResult ExeLoginWithToken([FromBody] LoginWithToken.LoginParams loginParams)
 
         {
-            using var db = new AppDB();
-            string token = LoginWithToken.ExeGetToken(db, loginParams);
-            return token;
+            try
+            {
+                var header = this.HttpContext.Request.Headers.ToList();
+                using var db = new AppDB();
+                dynamic result = LoginWithToken.ExeGetToken(db, loginParams);
+                dynamic refreshToken = Tokens.GetRefreshToken();
+                userToken.Username = result.Name;
+                userToken.UserPosition = result.Position;
+                SetRefreshToken(refreshToken);
+
+                Console.WriteLine(userToken.Username + " " + userToken.UserPosition);
+
+                return ExeResultWithData(result);
+            }
+            catch(Exception ex)
+            {
+               return BadRequest(ex.Message);
+            }
+            
+        }
+        [HttpPost("RefreshToken")]
+        public IActionResult ExeRefreshtoken()
+
+        {
+            try
+            {
+                var refreshToken = Request.Cookies["refreshToken"];
+
+                if (userToken.RefreshToken != refreshToken)
+                {
+                    return Unauthorized("Invalid Refresh Token");
+                }
+                if (userToken.TokenExpires < DateTime.Now)
+                {
+                    return Unauthorized("Token Expired");
+                }
+
+                string token = Tokens.CreateToken(userToken.Username!, userToken.UserPosition!);
+
+                return Ok(RequestResult.ExeResponse("Success", token));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+       
+        private void SetRefreshToken(dynamic data)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = data.Expires,
+            };
+            Response.Cookies.Append("refreshToken", data.Token, cookieOptions);
+
+            userToken.RefreshToken = data.Token;
+            userToken.TokenCreated = DateTime.Now;
+            userToken.TokenExpires = data.Expires;
         }
         private IActionResult ExeResult(bool result)
         {
             return result ? Ok() : BadRequest();
+        }
+        private IActionResult ExeResultWithData(dynamic data)
+        {
+            var type = data.GetType().Name;
+            if(type == "String")
+            {
+                if (data == "Account don't exist")
+
+                    {
+                        return Ok(RequestResult.ExeResponse("Success", data));
+                    }
+                    else
+                    {
+                        return BadRequest(RequestResult.ExeResponse("Error", data));
+                    }
+            }
+            else
+            {
+             return Ok(RequestResult.ExeResponse("Success", data));
+            }
         }
     }
 }

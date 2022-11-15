@@ -3,6 +3,7 @@ using InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry;
 using InfoMgmtSys.Models.DataEntry.ApIncharge.IssuanceDataEntry;
 using InfoMgmtSys.Models.DataEntry.AllAccess.IssuanceDataEntry;
 using InfoMgmtSys.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InfoMgmtSys.Controllers
 {
@@ -38,18 +39,36 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
+        [Authorize]
         [HttpPost("AddMultipleCollectionIdeOrders")]
         public IActionResult AddMultipleCollectionIdeOrders([FromBody] List<AddMultipleCollectionIdeOders> addMultipleCollectionIdeOders)
         {
-            var collectionOrders = new AddMultipleCollectionIdeOders();
-            string exeResult = collectionOrders.ExeAddMultipleCollectionIdeOrders(addMultipleCollectionIdeOders);
-            return ExeResultWithData(exeResult, addMultipleCollectionIdeOders);
+            try
+            {
+                var collectionOrders = new AddMultipleCollectionIdeOders();
+                string exeResult = collectionOrders.ExeAddMultipleCollectionIdeOrders(addMultipleCollectionIdeOders, this.HttpContext);
+                return ExeResultWithData(exeResult, addMultipleCollectionIdeOders);
+
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
         }
+        [Authorize]
         [HttpPost("AddIdeWithOrders")]
         public IActionResult AddIdeWithOrders([FromBody] AddIdeWithOrders addIdeWithOrders)
         {
-            string exeResult = addIdeWithOrders.ExeAddIdeWithOrders(addIdeWithOrders);
-            return ExeResultWithData(exeResult, addIdeWithOrders);
+            try
+            {
+                string exeResult = addIdeWithOrders.ExeAddIdeWithOrders(addIdeWithOrders, this.HttpContext);
+                return ExeResultWithData(exeResult, addIdeWithOrders);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+           
         }
 
 
@@ -69,12 +88,21 @@ namespace InfoMgmtSys.Controllers
             db.Exeresult(isExecuted);
             return ExeResult(isExecuted);
         }
+        [Authorize]
         [HttpPut("UpdateIdeWithOrders")]
         public IActionResult ExeUpdateIdeWithOrders([FromBody] Models.DataEntry.ApIncharge.IssuanceDataEntry.UpdateIdeWithOrdersByMisNo updateIdeWithOrders)
         {
-            using var db = new AppDB();
-            string exeResult = updateIdeWithOrders.ExeUpdateIdeWithOrders(updateIdeWithOrders);
-            return ExeResultWithData(exeResult, updateIdeWithOrders);
+            try
+            {
+                using var db = new AppDB();
+                string exeResult = updateIdeWithOrders.ExeUpdateIdeWithOrders(updateIdeWithOrders, this.HttpContext);
+                return ExeResultWithData(exeResult, updateIdeWithOrders);
+
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
         }
         [HttpPut("UpdateAllIdeByMisNo")]
         public IActionResult UpdateAllIdeByMisNo([FromForm] UpdateAllIdeByMisNo updateAllIdeByMisNo)
@@ -98,11 +126,20 @@ namespace InfoMgmtSys.Controllers
             string exeResult = updateAllCollectionOfIdeOrderByEntryNo.ExeUpdateAllCollectionOfIdeOrderByEntryNo(updateAllCollectionOfIdeOrderByEntryNo);
             return ExeResultWithData(exeResult, updateAllCollectionOfIdeOrderByEntryNo);
         }
+        [Authorize]
         [HttpPut("UpdateAllIdeWithOrders")]
         public IActionResult UpdateAllIdeWithOrders([FromBody] UpdateAllIdeWithOrdersByMisNo updateAllIdeWithOrdersByMisNo)
         {
-            dynamic exeResult = updateAllIdeWithOrdersByMisNo.ExeUpdateIdeWithOrders(updateAllIdeWithOrdersByMisNo);
-            return ExeResultWithDataGet(exeResult);
+            try
+            {
+                dynamic exeResult = updateAllIdeWithOrdersByMisNo.ExeUpdateIdeWithOrders(updateAllIdeWithOrdersByMisNo, this.HttpContext);
+                return ExeResultWithDataGet(exeResult);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+           
         }
         [HttpGet("GetIdeByMisNo")]
         public ActionResult<List<GetIdeByMisNo>> ExeGetIdeByMisNo([FromQuery] GetIdeByMisNo.GetIdeByMisNoParams getIdeByMisNo)
@@ -119,14 +156,59 @@ namespace InfoMgmtSys.Controllers
             var list = GetLatestIdeMisNo.ExeGetLatestIdeMisNo(db, obj);
             return list;
         }
+        [Authorize]
         [HttpGet("GetCollectionOfIdeOrdersSummary")]
         public IActionResult ExeGetCollectionOfIdeOrdersSummary([FromQuery] GetCollectionOfIdeOrdersSummary.GetCollectionOfIdeOrdersSummaryParams getCollectionOfIdeOrdersSummaryParams)
         {
-            using var db = new AppDB();
-            var list = GetCollectionOfIdeOrdersSummary.ExeGetCollectionOfIdeOrdersSummary(db, getCollectionOfIdeOrdersSummaryParams);
-            return ExeResultWithDataGet(list);
+            try
+            {
+              
+                using var db = new AppDB();
+                var list = GetCollectionOfIdeOrdersSummary.ExeGetCollectionOfIdeOrdersSummary(db, getCollectionOfIdeOrdersSummaryParams);
+                return ExeResultWithDataGet(list);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+           
 
         }
+        [Authorize]
+        [HttpGet("GetCollectionOfIdeOrdersSummaryBySearch")]
+        public IActionResult ExeGetCollectionOfIdeOrdersSummaryBySearch([FromQuery] GetCollectionOfIdeOrdersSummaryBySearch.GetCollectionOfIdeOrdersSummaryBySearchParams getCollectionOfIdeOrdersSummaryBySearchParams)
+        {
+            try
+            {
+
+                var list = GetCollectionOfIdeOrdersSummaryBySearch.ExeGetCollectionOfIdeOrdersSummaryBySearch(getCollectionOfIdeOrdersSummaryBySearchParams);
+                return ExeResultWithDataGet(list);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+
+
+        }
+        [Authorize]
+        [HttpGet("GetIdeSummaryReportBySearch")]
+        public IActionResult ExeGetIdeSummaryReportBySearch([FromQuery] GetIdeSummaryReportBySearch.GetIdeSummaryReportParams getIdeSummaryReportParams)
+        {
+            try
+            {
+
+                var list = GetIdeSummaryReportBySearch.ExeGetIdeSummaryReport(getIdeSummaryReportParams);
+                return ExeResultWithDataGet(list);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+
+
+        }
+
         [HttpGet("GetIncompleteIde")]
         public ActionResult<List<GetIncompleteIde>> ExeGetIncompleteIde()
         {
@@ -135,17 +217,31 @@ namespace InfoMgmtSys.Controllers
             var list = GetIncompleteIde.ExeGetIncompleteIde(db, obj);
             return list;
         }
+        [Authorize]
         [HttpGet("GetAllIdeWithOrdersByCurrentMonth")]
         public IActionResult ExeGetAllIdeWithOrdersByCurrentMonth()
         {
             var e = GetAllIdeWithOrdersByCurrentMonth.ExeGetAllIdeWithOrdersByCurrentMonth();
             return ExeResultWithDataGet(e);
         }
+        [Authorize]
         [HttpGet("GetAllIdeWithOrdersBySearch")]
         public IActionResult ExeGetAllIdeWithOrdersBySearch([FromQuery] GetIdeWithOrdersBySearch.SearchParam searchParam )
         {
-            var e = GetIdeWithOrdersBySearch.ExeGetAllIdeWithOrdersBySearch(searchParam);
-            return ExeResultWithDataGet(e);
+            try
+            {
+                if (searchParam.Search == null)
+                {
+                    return BadRequest(RequestResult.ExeResponse("Error", searchParam));
+                }
+                var e = GetIdeWithOrdersBySearch.ExeGetAllIdeWithOrdersBySearch(searchParam);
+                return ExeResultWithDataGet(e);
+            }
+            catch (Exception ex)
+            {
+                return ExeResultIsNull(ex.Message);
+            }
+            
         }
         [HttpGet("GetAllIdeWithOrdersAndCollectionByCurrentMonth")]
         public IActionResult ExeGetAllIdeWithOrdersAndCollectionByCurrentMonth()
@@ -181,6 +277,10 @@ namespace InfoMgmtSys.Controllers
                 return BadRequest(RequestResult.ExeResponse("Error", result));
             }
 
+        }
+        private IActionResult ExeResultIsNull(dynamic data)
+        {
+            return BadRequest(RequestResult.ExeResponse("Error", data));
         }
     }
 }

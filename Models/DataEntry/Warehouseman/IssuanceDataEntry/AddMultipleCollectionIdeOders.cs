@@ -1,4 +1,5 @@
-﻿namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
+﻿using InfoMgmtSys.Models.Logs;
+namespace InfoMgmtSys.Models.DataEntry.Warehouseman.IssuanceDataEntry
 {
     public class AddMultipleCollectionIdeOders
     {
@@ -6,7 +7,7 @@
         public string? Particulars { get; set; }
         public double Amount { get; set; }
 
-        public string ExeAddMultipleCollectionIdeOrders(List<AddMultipleCollectionIdeOders> addMultipleCollectionIdeOrders)
+        public string ExeAddMultipleCollectionIdeOrders(List<AddMultipleCollectionIdeOders> addMultipleCollectionIdeOrders, HttpContext httpContext)
         {
             try
             {
@@ -17,8 +18,9 @@
                     {
                         db = new AppDB();
                         db.AddStoredProc(db, addMultipleCollectionIdeOrders[num1], "Add_collection_ide_orders");
+                        AddLogs.ExeAddLogs(addMultipleCollectionIdeOrders, httpContext, "Issuing", addMultipleCollectionIdeOrders[num1].IDE_order_no, "Add");
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         return ex.Message;
                     }

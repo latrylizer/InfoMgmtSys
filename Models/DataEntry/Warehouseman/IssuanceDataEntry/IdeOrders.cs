@@ -2,7 +2,7 @@
 {
     public class IdeOrders
     {
-        public string? Item_Description { get; set; }
+        public string? Item_description { get; set; }
         public string? UOM { get; set; }
         public int Qty { get; set; }
 
@@ -14,7 +14,7 @@
                 var orders = new AddIdeOrders
                 {
                     MIS_no = MIS_no,
-                    Item_Description = addIdeWithOrders.Orders![num1].Item_Description,
+                    Item_description = addIdeWithOrders.Orders![num1].Item_description,
                     UOM = addIdeWithOrders.Orders![num1].UOM,
                     Qty = addIdeWithOrders.Orders![num1].Qty,
                 };

@@ -20,7 +20,7 @@ namespace InfoMgmtSys
                 UserID = "root",
                 Password = "Douls102798",
                 SslMode = MySqlSslMode.Disabled,
-                ConvertZeroDateTime = false,
+                ConvertZeroDateTime = true,
 
             };
             connectionString = mysqlstring.ConnectionString;
